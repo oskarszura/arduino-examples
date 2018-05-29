@@ -6,7 +6,7 @@ ESP8266WebServer server(80);
 void setup() {
  
   Serial.begin(115200);
-  WiFi.begin("ists-785", "POK99MNB");  //Connect to the WiFi network
+  WiFi.begin("network", "pass");  //Connect to the WiFi network
  
   while (WiFi.status() != WL_CONNECTED) {  //Wait for connection
  
