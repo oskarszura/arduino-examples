@@ -1,0 +1,52 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial softSerial(2, 3); // RX, TX
+String incommingMsg = "";
+
+void setup()
+{
+  uint32_t baud = 9600;
+  Serial.begin(baud);
+  softSerial.begin(baud);
+  Serial.print("SETUP!! @");
+  Serial.println(baud);
+
+  softSerial.println("AT+RST");
+  delay(2000);
+  softSerial.println("AT+CWMODE=1");
+  delay(2000);
+  softSerial.println("AT+CWJAP=\"ssid\",\"password\"");
+  delay(2000);
+  softSerial.println("AT+CIPMUX=1");
+  delay(2000);
+  softSerial.println("AT+CIPSERVER=1,80");
+  delay(2000);
+  softSerial.println("AT+CIFSR");
+}
+
+void loop()
+{
+  
+  while(softSerial.available() > 0)
+  {
+    if(softSerial.find("+IPD,")) {
+      int connectionId = softSerial.read();
+      Serial.println(connectionId);
+
+      softSerial.println("AT+CIPSEND=" + String(connectionId) + ",5");
+      softSerial.println("Hello");
+      softSerial.println("AT+CIPCLOSE=" + String(connectionId));
+    }
+    
+    
+    char a = softSerial.read(); 
+    Serial.print(a);
+  }
+  
+  while(Serial.available() > 0)
+  {
+    char a = Serial.read(); 
+    Serial.write(a);
+    softSerial.write(a);
+  }
+}
